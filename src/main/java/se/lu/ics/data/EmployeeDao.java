@@ -19,15 +19,15 @@ public class EmployeeDao {
 
     private Employee mapToEmployee(ResultSet resultSet) throws SQLException {
         return new Employee(
-                resultSet.getString("EmpNo"),
-                resultSet.getString("EmpName"),
-                resultSet.getDouble("EmpSalary"));
+                resultSet.getString("emp_no"),
+                resultSet.getString("emp_name"),
+                resultSet.getDouble("emp_salary"));
     }
 
     public List<Employee> getAll() {
-        String query = "SELECT *"
-                + " FROM company.uspGetAllEmployees()"
-                + " ORDER BY EmpNo";
+        String query = "SELECT e.emp_no, e.emp_name, e.emp_salary"
+                + " FROM company.get_all_employees() AS e"
+                + " ORDER BY e.emp_no ASC";
 
         List<Employee> employees = new ArrayList<>();
 
@@ -46,8 +46,8 @@ public class EmployeeDao {
     }
 
     public Employee getByNo(String empNo) {
-        String query = "SELECT *"
-                + " FROM company.uspGetEmployeeByEmpNo(?)";
+        String query = "SELECT e.emp_no, e.emp_name, e.emp_salary"
+                + " FROM company.get_employee_by_emp_no(?) AS e";
 
         try (Connection connection = connectionHandler.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
@@ -68,7 +68,7 @@ public class EmployeeDao {
     }
 
     public void save(Employee employee) {
-        String call = "{call company.uspInsertEmployee(?, ?, ?)}";
+        String call = "{call company.insert_employee(?, ?, ?)}";
 
         try (Connection connection = connectionHandler.getConnection();
              CallableStatement statement = connection.prepareCall(call)) {
@@ -90,7 +90,7 @@ public class EmployeeDao {
     }
 
     public void update(Employee employee) {
-        String call = "{call company.uspUpdateEmployee(?, ?, ?)}";
+        String call = "{call company.update_employee(?, ?, ?)}";
 
         try (Connection connection = connectionHandler.getConnection();
              CallableStatement statement = connection.prepareCall(call)) {
@@ -112,7 +112,7 @@ public class EmployeeDao {
     }
 
     public void deleteByNo(String empNo) {
-        String call = "{call company.uspDeleteEmployee(?)}";
+        String call = "{call company.delete_employee(?)}";
 
         try (Connection connection = connectionHandler.getConnection();
              CallableStatement statement = connection.prepareCall(call)) {
@@ -131,9 +131,10 @@ public class EmployeeDao {
     }
 
     public List<Employee> getAllEmployeesWithDepartments() {
-        String query = "SELECT *"
-                + " FROM company.uspGetAllEmployeesWithDepartments()"
-                + " ORDER BY EmpNo, DeptName";
+        String query = "SELECT e.emp_no, e.emp_name, e.emp_salary,"
+                + " e.dept_name, e.dept_budget"
+                + " FROM company.get_all_employees_with_departments() AS e"
+                + " ORDER BY e.emp_no ASC, e.dept_name ASC";
 
         Map<String, Employee> employeeMap = new LinkedHashMap<>();
 
@@ -142,7 +143,7 @@ public class EmployeeDao {
              ResultSet resultSet = statement.executeQuery()) {
 
             while (resultSet.next()) {
-                String empNo = resultSet.getString("EmpNo");
+                String empNo = resultSet.getString("emp_no");
                 Employee employee = employeeMap.get(empNo);
 
                 if (employee == null) {
@@ -151,8 +152,8 @@ public class EmployeeDao {
                 }
 
                 Department department = new Department(
-                        resultSet.getString("DeptName"),
-                        resultSet.getDouble("DeptBudget"));
+                        resultSet.getString("dept_name"),
+                        resultSet.getDouble("dept_budget"));
                 employee.getDepartments().add(department);
             }
         } catch (SQLException e) {

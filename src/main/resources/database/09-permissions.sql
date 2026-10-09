@@ -5,28 +5,28 @@ GRANT CONNECT ON DATABASE companydb TO java_app_user;
 GRANT USAGE ON SCHEMA company TO java_app_user;
 
 REVOKE EXECUTE ON ALL ROUTINES IN SCHEMA company FROM PUBLIC;
-GRANT EXECUTE ON FUNCTION company.uspGetAllEmployees()
+GRANT EXECUTE ON FUNCTION company.get_all_employees()
     TO java_app_user;
-GRANT EXECUTE ON FUNCTION company.uspGetEmployeeByEmpNo(VARCHAR)
+GRANT EXECUTE ON FUNCTION company.get_employee_by_emp_no(VARCHAR)
     TO java_app_user;
-GRANT EXECUTE ON FUNCTION company.uspGetAllEmployeesWithDepartments()
-    TO java_app_user;
-GRANT EXECUTE ON PROCEDURE
-    company.uspInsertEmployee(VARCHAR, VARCHAR, NUMERIC)
+GRANT EXECUTE ON FUNCTION company.get_all_employees_with_departments()
     TO java_app_user;
 GRANT EXECUTE ON PROCEDURE
-    company.uspUpdateEmployee(VARCHAR, VARCHAR, NUMERIC)
+    company.insert_employee(VARCHAR, VARCHAR, NUMERIC)
     TO java_app_user;
-GRANT EXECUTE ON PROCEDURE company.uspDeleteEmployee(VARCHAR)
+GRANT EXECUTE ON PROCEDURE
+    company.update_employee(VARCHAR, VARCHAR, NUMERIC)
+    TO java_app_user;
+GRANT EXECUTE ON PROCEDURE company.delete_employee(VARCHAR)
     TO java_app_user;
 
 -- Read functions use the caller's table permissions.
-GRANT SELECT ON company.Employee, company.Department, company.Work
+GRANT SELECT ON company.employee, company.department, company.work
     TO java_app_user;
 
 -- Invoker procedures need these underlying write privileges.
-GRANT INSERT (EmpNo, EmpName, EmpSalary),
-      UPDATE (EmpName, EmpSalary), DELETE
-    ON company.Employee TO java_app_user;
-GRANT USAGE ON SEQUENCE company.employee_employeeid_seq
+GRANT INSERT (emp_no, emp_name, emp_salary),
+      UPDATE (emp_name, emp_salary), DELETE
+    ON company.employee TO java_app_user;
+GRANT USAGE ON SEQUENCE company.employee_employee_id_seq
     TO java_app_user;

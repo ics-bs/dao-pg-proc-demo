@@ -1,35 +1,41 @@
-CREATE PROCEDURE company.uspUpdateEmployee(
-    p_EmpNo VARCHAR, p_EmpName VARCHAR, p_EmpSalary NUMERIC)
+CREATE PROCEDURE company.update_employee(
+    p_emp_no VARCHAR,
+    p_emp_name VARCHAR,
+    p_emp_salary NUMERIC
+)
 LANGUAGE plpgsql
 SECURITY INVOKER
 AS $$
 DECLARE
-    error_state TEXT;
-    error_message TEXT;
+    v_error_state TEXT;
+    v_error_message TEXT;
 BEGIN
     -- Finish the empty entry transaction before choosing isolation.
     COMMIT;
     SET TRANSACTION ISOLATION LEVEL READ COMMITTED;
     BEGIN
-        UPDATE company.Employee
-        SET EmpName = p_EmpName, EmpSalary = p_EmpSalary
-        WHERE EmpNo = p_EmpNo;
+        UPDATE company.employee AS e
+        SET emp_name = p_emp_name,
+            emp_salary = p_emp_salary
+        WHERE
+            e.emp_no = p_emp_no;
         IF NOT FOUND THEN
-            RAISE EXCEPTION 'Employee % does not exist.', p_EmpNo
+            RAISE EXCEPTION 'Employee % does not exist.', p_emp_no
                 USING ERRCODE = 'P2001';
         END IF;
-    EXCEPTION WHEN OTHERS THEN
-        GET STACKED DIAGNOSTICS
-            error_state = RETURNED_SQLSTATE,
-            error_message = MESSAGE_TEXT;
+    EXCEPTION
+        WHEN OTHERS THEN
+            GET STACKED DIAGNOSTICS
+                v_error_state = RETURNED_SQLSTATE,
+                v_error_message = MESSAGE_TEXT;
     END;
     -- Transaction control must be outside the exception block.
-    IF error_state IS NULL THEN
+    IF v_error_state IS NULL THEN
         COMMIT;
     ELSE
         ROLLBACK;
         RAISE EXCEPTION USING
-            ERRCODE = error_state, MESSAGE = error_message;
+            ERRCODE = v_error_state, MESSAGE = v_error_message;
     END IF;
 END;
 $$;

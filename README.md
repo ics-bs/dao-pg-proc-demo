@@ -46,7 +46,29 @@ src/main/
 The Java packages and resource directories follow the original project. The
 additional `demos` package contains the console examples from the presentation.
 The original repository's unrelated Course/Student schema is replaced by the
-Employee/Department/Work schema shown in the presentation.
+`employee`/`department`/`work` schema shown in the presentation.
+
+## SQL naming conventions
+
+SQL follows the INFC20 server-side programming examples: unquoted snake_case
+identifiers, uppercase keywords, `p_` parameters, and `v_` local variables.
+Constraints include the table and key columns in their names. Queries list
+result columns explicitly, use `AS` aliases and qualified column references,
+and specify `ASC` for ascending result order. Java identifiers retain Java naming.
+
+| Routine | Kind |
+| --- | --- |
+| `company.get_all_employees()` | Function |
+| `company.get_employee_by_emp_no(p_emp_no)` | Function |
+| `company.get_all_employees_with_departments()` | Function |
+| `company.insert_employee(p_emp_no, p_emp_name, p_emp_salary)` | Procedure |
+| `company.update_employee(p_emp_no, p_emp_name, p_emp_salary)` | Procedure |
+| `company.delete_employee(p_emp_no)` | Procedure |
+
+These identifiers replace the earlier `usp` names and mixed-case SQL spellings.
+The setup scripts describe a fresh database, not an in-place migration of an
+existing installation. Transaction handling, permissions, and error behavior
+are unchanged.
 
 ## Database setup
 
@@ -161,6 +183,6 @@ Run the calls separately to observe both custom errors; it is not a setup script
 ## Scope of the example
 
 The Java model uses `double` for money and does not preserve SQL NULL in numeric
-fields. It also omits `Work.StartDate`. These match the presentation; exact money
+fields. It also omits `work.start_date`. These match the presentation; exact money
 and nullable values need a richer model. The JavaFX launcher retains the original
 TODO for more complete startup-error handling.

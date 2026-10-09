@@ -1,30 +1,37 @@
 CREATE SCHEMA company;
 REVOKE ALL ON SCHEMA company FROM PUBLIC;
 
-CREATE TABLE company.Department (
-    DepartmentID  INTEGER        GENERATED ALWAYS AS IDENTITY,
-    DeptName      VARCHAR(100)   NOT NULL,
-    DeptBudget    DECIMAL(19,2),
-    CONSTRAINT PK_Department PRIMARY KEY (DepartmentID),
-    CONSTRAINT UQ_Department_DeptName UNIQUE (DeptName)
+CREATE TABLE company.department (
+    department_id  INTEGER         GENERATED ALWAYS AS IDENTITY,
+    dept_name      VARCHAR(100)    NOT NULL,
+    dept_budget    NUMERIC(19, 2),
+    CONSTRAINT pk_department_department_id
+        PRIMARY KEY (department_id),
+    CONSTRAINT uq_department_dept_name
+        UNIQUE (dept_name)
 );
 
-CREATE TABLE company.Employee (
-    EmployeeID  INTEGER        GENERATED ALWAYS AS IDENTITY,
-    EmpNo       VARCHAR(10)    NOT NULL,
-    EmpName     VARCHAR(50),
-    EmpSalary   DECIMAL(19,2),
-    CONSTRAINT PK_Employee PRIMARY KEY (EmployeeID),
-    CONSTRAINT UQ_Employee_EmpNo UNIQUE (EmpNo)
+CREATE TABLE company.employee (
+    employee_id  INTEGER         GENERATED ALWAYS AS IDENTITY,
+    emp_no       VARCHAR(10)     NOT NULL,
+    emp_name     VARCHAR(50),
+    emp_salary   NUMERIC(19, 2),
+    CONSTRAINT pk_employee_employee_id
+        PRIMARY KEY (employee_id),
+    CONSTRAINT uq_employee_emp_no
+        UNIQUE (emp_no)
 );
 
-CREATE TABLE company.Work (
-    EmployeeID    INTEGER,
-    DepartmentID  INTEGER,
-    StartDate     DATE,
-    CONSTRAINT PK_Work PRIMARY KEY (EmployeeID, DepartmentID),
-    CONSTRAINT FK_Work_Employee FOREIGN KEY (EmployeeID)
-        REFERENCES company.Employee(EmployeeID) ON DELETE CASCADE,
-    CONSTRAINT FK_Work_Department FOREIGN KEY (DepartmentID)
-        REFERENCES company.Department(DepartmentID)
+CREATE TABLE company.work (
+    employee_id    INTEGER,
+    department_id  INTEGER,
+    start_date     DATE,
+    CONSTRAINT pk_work_employee_id_department_id
+        PRIMARY KEY (employee_id, department_id),
+    CONSTRAINT fk_work_employee_id
+        FOREIGN KEY (employee_id)
+        REFERENCES company.employee (employee_id) ON DELETE CASCADE,
+    CONSTRAINT fk_work_department_id
+        FOREIGN KEY (department_id)
+        REFERENCES company.department (department_id)
 );

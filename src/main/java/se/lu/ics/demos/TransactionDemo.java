@@ -11,11 +11,11 @@ public class TransactionDemo {
         try (Connection connection = connectionHandler.getConnection()) {
             connection.setAutoCommit(false);
 
-            String insertEmployee = "INSERT INTO company.Employee"
-                    + " (EmpNo, EmpName, EmpSalary) VALUES (?, ?, ?)";
+            String insertEmployee = "INSERT INTO company.employee"
+                    + " (emp_no, emp_name, emp_salary) VALUES (?, ?, ?)";
 
-            String insertDepartment = "INSERT INTO company.Department"
-                    + " (DeptName, DeptBudget) VALUES (?, ?)";
+            String insertDepartment = "INSERT INTO company.department"
+                    + " (dept_name, dept_budget) VALUES (?, ?)";
 
             try (PreparedStatement employee =
                     connection.prepareStatement(insertEmployee);

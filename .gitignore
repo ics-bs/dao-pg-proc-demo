@@ -1,0 +1,9 @@
+/target/
+/src/main/resources/config/config.properties
+*.class
+.DS_Store
+.idea/
+*.iml
+.settings/
+.classpath
+.project

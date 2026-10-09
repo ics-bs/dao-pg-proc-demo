@@ -1,0 +1,6 @@
+# Local teaching database; replace the placeholder privately.
+database.server.name=localhost
+database.server.port=5432
+database.name=companydb
+database.user.name=java_app_user
+database.user.password=CHANGE_ME_LOCALLY
